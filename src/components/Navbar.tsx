@@ -1,45 +1,37 @@
-// src/components/Navbar.tsx
-import React from 'react'
+
 import { Link, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import type { RootState } from '../app/store'
 import { logout } from '../features/auth/authSlice'
-import './Navbar.css' // opcional: crea un CSS simple si quieres
 
-export default function Navbar(): JSX.Element {
+export default function Navbar() {
   const dispatch = useDispatch()
   const navigate = useNavigate()
+  const name = useSelector((s: RootState) => s.auth.name)
+  const role = useSelector((s: RootState) => s.auth.role)
 
-  const name = useSelector((state: RootState) => state.auth.name)
-  const role = useSelector((state: RootState) => state.auth.role)
-
-  const handleLogout = () => {
-    dispatch(logout())
-    navigate('/login')
-  }
+  const handleLogout = () => { dispatch(logout()); navigate('/login') }
 
   return (
-    <nav style={navStyle}>
-      <div style={leftStyle}>
-        <Link to="/store" style={brandStyle}>TechVault</Link>
-        <div style={linksStyle}>
-          <Link to="/store" style={linkStyle}>Store</Link>
-          {role === 'manager' && <Link to="/admin/create" style={linkStyle}>Crear producto</Link>}
-          {role === 'customer' && <Link to="/cart" style={linkStyle}>Carrito</Link>}
-        </div>
+    <header className="nav">
+      <div className="nav-left">
+        <Link to="/store" className="brand">TechVault</Link>
+        <nav className="nav-links">
+          <Link to="/store">Store</Link>
+          {role === 'manager' && <Link to="/admin/create">Crear producto</Link>}
+          {role === 'customer' && <Link to="/cart">Carrito</Link>}
+        </nav>
       </div>
-
-      <div style={rightStyle}>
+      <div className="nav-right">
         {name ? (
           <>
-            <span style={{ marginRight: 12 }}>Hola, <strong>{name}</strong> ({role})</span>
-            <button onClick={handleLogout} style={btnStyle}>Logout</button>
+            <span className="greet">Hola, <strong>{name}</strong> ({role})</span>
+            <button className="btn" onClick={handleLogout}>Logout</button>
           </>
         ) : (
-          <Link to="/login" style={linkStyle}>Iniciar sesión</Link>
+          <Link to="/login">Iniciar sesión</Link>
         )}
       </div>
-    </nav>
+    </header>
   )
 }
-
